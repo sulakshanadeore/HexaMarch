@@ -8,16 +8,37 @@ DML---Delete---> it removes single/multiple rows depending on the condition spec
 use SIS
 go
 select * from student
-
+select * from branch
 select * from StudentMarks
 
+
+alter table student
+drop constraint FK__student__branchi__4BAC3F29
+alter table subjects
+drop constraint FK__subjects__branch__5070F446
+
+drop table branch
+sp_help branch
+
+sp_help subjects
+
+
+
+
+drop table StudentMarks
+
+delete from branch
+where BranchId=102
+
 delete from student
-where Rollno=3
+where Rollno=4
 
 insert into StudentMarks values(3,1,80)
 insert into StudentMarks values(3,2,70)
 
 sp_help student
+
+
 
 --To do ON DELETE CASCADE:
 --1) Open the foreign key table in the design mode in  Object Explorer(StudentMarks)
@@ -53,3 +74,9 @@ insert into CustLoan (LoanTenure,LoanAmt,Custid) values(100,100000,3),(200,10000
 
 delete from Customer
 where Custid in (2,3)
+
+
+
+
+
+
