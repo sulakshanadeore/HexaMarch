@@ -1,0 +1,178 @@
+use NorthwindOriginal
+go
+
+---to get the list of tables in the database
+select * from sys.sysobjects
+where xtype='U'
+
+select * from NorthwindOriginal.INFORMATION_SCHEMA.TABLES
+select * from NorthwindOriginal.INFORMATION_SCHEMA.VIEWS
+
+
+select * from Employees
+select * from Categories
+select * from Products
+select ProductID,SupplierID,ProductName,UnitPrice  from Products
+where UnitPrice>10
+
+--using relative positioning in  order by
+select ProductID,SupplierID,CategoryID,ProductName,UnitPrice  from Products
+where UnitPrice>10
+order by 4 desc, 3 
+
+
+select ProductID,SupplierID,CategoryID,ProductName,UnitPrice  from Products
+where UnitPrice>10
+order by UnitPrice desc, CategoryID 
+
+---where clause with and,or,not,between,like,in 
+
+---All products whose supplierid and categoryid=1
+select * from Products
+where supplierid=1 and CategoryID=1
+
+---All products whose supplierid or categoryid=1
+select * from Products
+where supplierid=1 or CategoryID=1
+
+---All products whose supplierid=1 or supplierid=2
+select * from Products
+where supplierid=1 or supplierid=2
+
+--All products whose supplierid=1 or supplierid=2 and categoryid=1
+select * from Products
+where (supplierid=1 or supplierid=2) and CategoryID=1
+
+--All products whose supplierid=1 or supplierid=2 or categoryid=1
+select * from Products
+where (supplierid=1 or supplierid=2) or CategoryID=1
+
+
+select * from Products
+where supplierid in(1,2) or CategoryID=1
+
+--All products whose supplierid!=1 or supplierid!=2 or categoryid=1
+select * from Products
+where supplierid  not in(1,2) or CategoryID=1
+
+select * from Products
+where supplierid  not in(1,2) and CategoryID=1
+order by SupplierID
+
+
+select * from Products
+where supplierid  not in(1,2)
+order by SupplierID
+
+--Aggregate Functions: one value for a set of values
+==================================================
+select * from products
+where CategoryID=2
+
+--How many Number of products are there in each category?
+----Number of products(Count) ---
+----each category===group by 
+
+select categoryid,count(productid) as productCount from products
+group by categoryid
+
+
+select * from products
+where categoryid=1
+
+select sum(unitprice) from products
+where categoryid=1
+
+
+select categoryid,sum(unitprice) totalPrices from products
+group by categoryid
+
+select * from [Order Details]
+where productid=1
+---find the discontinued products
+select * from products
+where discontinued=1
+1 true
+0 false
+
+---find the count of orders  productwise excluding the discontinued products
+
+select productid,count(orderid) CountOfOrders from [Order Details]
+where productid not in (5,9,17,24,28,29,42,53)
+group by productid
+order by count(orderid), productid
+
+--------------------------------------------------
+---find the count of orders  productwise excluding the discontinued products and exclude the orders which have count <10
+select productid,count(orderid) CountOfOrders from [Order Details]
+where productid not in (5,9,17,24,28,29,42,53)
+group by productid
+having count(orderid)>=10
+order by count(orderid), productid
+
+15
+37
+48
+66
+27
+-------------------------------------------
+select min(unitprice) minprice,max(unitprice) maxprice, avg(unitprice) avgprice from products
+----------------------------------------------
+---find the minprice categorywise.
+select categoryid,min(unitprice) minprice from products
+group by categoryid
+---------------------------
+-----find the avg unitprice supplierwise
+select supplierid,avg(unitprice) avgprice from products
+group by supplierid
+order by avgprice
+----------------------
+---Top n analysis
+--find top 10 lowest avg price suppliers 
+select top 10 supplierid,avg(unitprice) avgprice from products
+group by supplierid
+order by avgprice
+----------------------
+--find top 10 highest avg price suppliers 
+select top 10 supplierid,avg(unitprice) avgprice from products
+group by supplierid
+order by avgprice desc
+----------------------------------
+-----find the max price supplierwise and categorywise
+select categoryid,supplierid,max(unitprice) maxprice from products
+group by categoryid,supplierid
+----------------------------------------------
+
+select * from [Order Details]
+
+Orderid count(productid)
+10248         3
+10249         2
+
+select orderid,count(productid) productCnt from [order details]
+group by orderid
+-----------------------------------------
+-----Wild card characters
+% --- represents zero or more chars (supported by sql server)
+_ ----represents single char (supported by sql server)
+
+[]--single char within the brackets(not supported by sqlserver,postgre sql, mysql)
+^ --- represents any char not in brackets (not supported by sql server,
+											postgre sql, mysql)
+-  --- represents any single char within the specified range(not supported by sql server,postgre sql, mysql)
+{} ----represents any escaped character(not supported by sql server but by oracle)
+------------------------------
+
+select * from customers
+
+select * from customers
+where companyname like 'A%'
+
+select * from customers
+where city like '_____'
+
+select * from customers
+where companyname like 'A%te'
+
+select * from customers
+where companyname like '%re%'
