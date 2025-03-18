@@ -1,0 +1,35 @@
+-- Virtual table
+--they donot store any data, but when u execute sql queries on the view, the underlying table is used by the vie to execute the query & return the output.
+--Types of views:
+--1) Simple: All DML operations are possible through the view. It doesnot contain any join,subquery, aggregate function in its definition.Also called as "Updateable Views".
+--2) Complex: No DML operations are possible through the view. It  contain  join,subquery, aggregate function,group by in its definition.Also called as readonly views.
+
+create  view V1
+as
+select productid,productname,unitprice from products
+
+select * from V1
+insert into V1 values ('NewChai',25)
+select * from products
+
+create view v2
+(pid,pname,price)
+as
+select productid,productname,unitprice from products
+
+select * from v2
+--Use/Utility of view
+1) Hide the tablename/columnnames/both and achieve security.
+2) Only show restriced to a particular users/group of users.
+3) Limited access to users for inserting data,updating or deleting.
+
+create view V3
+as 
+select categoryid,count(productid) as prodcnt from products
+group by categoryid
+
+
+select * from v3
+
+
+
