@@ -1,0 +1,28 @@
+select getdate()
+select month(getdate())
+select month(hiredate), day(hiredate), year(hiredate),datename(weekday,hiredate) from  employees
+
+datename---select,whre,group by, orderby,having
+select datename(WEEK,getdate()) 
+select datename(WEEKDAY,getdate()) 
+select datename(month,getdate()) 
+select month(getdate())
+select datename(day,getdate()) 
+select datename(year,getdate()) 
+
+
+select dateadd(month,3,getdate())
+select dateadd(day,3,getdate())
+select dateadd(day,-3,getdate())
+
+select hiredate, datediff(year,HireDate,getdate()) from Employees
+select hiredate, datediff(day,HireDate,getdate()) from Employees
+select hiredate, datediff(HOUR,HireDate,getdate()) from Employees
+
+select hiredate, datediff(WEEK,HireDate,getdate()) from Employees
+
+select hiredate, datepart(WEEK,HireDate) from Employees
+
+select hiredate,datename(week,datepart(d,hiredate))  week,datename(weekday,datepart(d,hiredate)) from Employees
+
+
