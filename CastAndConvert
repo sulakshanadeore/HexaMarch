@@ -1,0 +1,58 @@
+CAST---> Ansi sql
+Convert----> product specific
+
+Cast---> cast (exp as datatype(len))
+Convert (datatype(len), exp)
+
+select cast(34.56 as int)
+
+select unitprice, cast(unitprice as varchar(10)) from products
+
+
+select 'The price of ' + productname + '= ' + cast(unitprice as varchar(10)) from products 
+
+select convert(varchar(10),unitprice) from Products
+
+select 'The price of ' + productname + '= ' + convert(varchar(10),unitprice) from products 
+
+select convert(varchar(12),getdate())
+
+
+select * from Orders
+
+select convert(varchar(7),orderid) + ' was brought by employeeid  ' +  convert(varchar(2),employeeid) + ' on ' + convert(varchar(12), OrderDate)  from Orders
+
+select cast(orderid as varchar(7)) + ' was brought by employeeid  ' +  convert(varchar(2),employeeid) + ' on ' + convert(varchar(12), OrderDate)  from Orders
+
+select * from Categories
+
+select count(categoryid) from Products
+
+select count(distinct(categoryid)) from Products
+
+select distinct categoryid from Products
+
+select square(2)
+
+select sqrt(100)
+
+select sum(1+2+9)
+
+select sum(unitprice) from products
+where categoryid=1
+
+select floor(67.45) 
+
+select ceiling(67.45)
+
+select abs(-34.5)
+
+select power(10,3)
+
+select EmployeeID,firstname,isnull(region,'No region') from employees
+--it replaces the null value with the value specified, here 'no region'
+
+select EmployeeID,firstname,nullif(region,'No region') from employees
+
+select nullif(25,25.8)
+
