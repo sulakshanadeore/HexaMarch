@@ -1,0 +1,48 @@
+--Indexes
+What are Indexes and Why to use Indexes?
+Structure on disk which helps to speed up the retrieval of the rows from the table or the view.
+It has keys built using one or more columns from the table or the view.
+These keys are stored in B-tree structure that helps sql server to find the row/s associated with the key values quickly and easily.
+
+Types of Indexes:
+Clustered: 
+One per table, and if primary key is specified then clustered index is 
+automatically created.
+Clustered indexes store physical table data with themselves and they are updated whenever a new row is added or a row is deleted from the table based on primary key.
+
+
+
+Non Clustered:
+Any number of non clustered indexes are allowed with sql server.
+----------------------------------------------------------------
+Indexes must be created on columns which are frequently used in the where clause of the select statement.
+-----------------------------------------------
+
+Filter by City, State, Birthdate, Joiningdate---- where 
+
+
+
+use SIS
+go
+sp_help student
+
+select * from student
+where rollno=8
+
+select * from student
+where emailid like 'jimmy@yahoo.com'
+
+
+create index indx_birthDate
+on student(birthdate)
+
+where ---- and--- email and birthdate
+
+--Composite Index
+create index indx_email_birthDate
+on student(emailid,birthdate)
+
+select * from student 
+where emailid like 'jimmy@yahoo.com' and birthdate ='1988-10-04 00:00:00.000'
+
+
