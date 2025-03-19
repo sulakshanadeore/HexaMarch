@@ -1,0 +1,82 @@
+String, Date ---Row Level Functions
+
+select Studname, upper(Studname),lower(studname),len(studname)  from student
+
+select studname, SUBSTRING(studname,1,4) as studnamepart   from student
+
+select SUBSTRING('Hexaware',1,4)
+
+use northwindoriginal
+go
+
+select * from Employees
+select concat('Hello ', titleofcourtesy,'. ', FirstName,' ' ,LastName)  from Employees
+
+select EmployeeID,concat(titleofcourtesy,'. ', FirstName,' ' ,LastName) as Name , replace(country,'USA','United States') as country, REPLACE(country,'UK','United Kingdom') from Employees
+
+
+select EmployeeID,concat(titleofcourtesy,'. ', FirstName,' ' ,LastName) as Name , 
+case when country='UK' then 'United Kingdom'
+     when country='USA' then 'United States'
+	 else 
+	 Country
+	 end as country
+	 from Employees
+
+select EmployeeID,concat(titleofcourtesy,'. ', FirstName,' ' ,LastName) as Name,
+case when country='UK' then 'United Kingdom'
+     when country='USA' then 'United States'
+	 else 
+	 Country
+	 end as country
+	 from Employees
+	 order by (
+	 case when country='UK' then 'United Kingdom'
+     when country='USA' then 'United States'
+	 else 
+	 Country
+	 end 
+	 )
+
+select LEFT('Hexaware',5) 
+select RIGHT('Hexaware',5) 
+
+select lastname,left(lastname,1) from Employees
+select lastname,CHARINDEX('o',LastName) from Employees
+select lastname,CHARINDEX('an',LastName) from Employees
+
+select firstname, ascii(left(firstname,1)) from Employees
+select ascii('Z')
+
+select char(65)
+select DIFFERENCE('Gauri','Gouri') 
+select difference('Banana','Guava')
+select difference('Guava','Guava')
+select SOUNDEX('Gauri'),soundex('Gouri')
+
+select len('   hello'),ltrim('   hello'),len(ltrim('   hello'))
+
+select len('   hello   '),rtrim('   hello   '),len(rtrim('   hello   '))
+
+select trim('   hello   ')
+
+select * from Products
+
+select nchar(65) 
+select unicode('U+00DF') 
+select productname, PATINDEX('%ha%',productname) from Products
+
+select * from Products
+select * from Employees
+
+select concat(firstname,lastname),char(10),TitleOfCourtesy  from employees
+select  stuff(
+(concat(firstname,lastname)),30,
+3,TitleOfCourtesy) from employees
+
+select len(concat(firstname,lastname)) from Employees
+
+
+select  stuff(firstname + ' ' + lastname,10,0,Title) as FullDetails from employees
+
+select stuff(firstname + ' ' + lastname,6,3,'sql') from Employees
