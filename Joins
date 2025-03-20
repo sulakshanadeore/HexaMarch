@@ -1,0 +1,178 @@
+--What are Joins?
+--Joins---combine rows from two or more tables based on a common/related column
+--in the tables then such a query is called as a Join query and the result of the query is a "Join".
+---Why Joins?
+--When the data is living over multiple tables (due to normalization) and you want to draw important info using that data then  we use joins.
+
+---How to use Joins
+---To use joins we use keywords depending on the table definition, and the output expected from the tables.
+
+---Types of Joins
+--a) Inner Joins(ANSI SQL)/Simple Joins/Join(ANSI SQL)/Natural Join(Oracle):
+--which join two or more tables using a "INNER JOIN" keyword and the condition is specified using "ON" keyword.
+--It is used when the combined table(join) is having data from both the tables using a (=) condition and so sometimes we also call them as "Equi Joins".
+
+use NorthwindOriginal
+go
+--Find the find out the category of the product  display the category name and also the suppliers of the products displaying the company name
+select ProductID,ProductName,p.CategoryID,CategoryName,p.SupplierID,CompanyName
+from Products as p inner join Categories as c 
+on p.CategoryID=c.CategoryID 
+inner join Suppliers s
+on p.SupplierID =s.SupplierID
+order by p.CategoryID,p.SupplierID
+
+--Find the suppliers of the products display the supplier company name and also the find out the category of the product
+
+select ProductID,ProductName,p.CategoryID,CategoryName,p.SupplierID,CompanyName
+from Products as p inner join Suppliers s
+on p.SupplierID=s.SupplierID
+inner join Categories c
+on p.CategoryID =c.CategoryID
+order by p.CategoryID,p.SupplierID
+
+---display  the orderid, orderdate and all the products in the order
+select o.orderid,OrderDate,productid,unitprice,quantity,discount  from Orders  as o
+inner join [Order Details] as od
+on o.OrderID=od.OrderID
+
+select o.orderid,OrderDate,productid,unitprice,quantity,discount  from Orders  as o, [Order Details] as od
+where o.OrderID=od.OrderID
+
+
+---display  the orderid, orderdate and all the products in the order and also find the customer details
+select Orders.orderid,OrderDate,productid,unitprice,quantity,discount,Orders.CustomerID,CompanyName  from Orders  
+inner join [Order Details] 
+on Orders.OrderID=[Order Details].OrderID
+inner Join Customers
+on Customers.CustomerID=Orders.CustomerID
+
+select Orders.orderid,OrderDate,productid,unitprice,quantity,discount,Orders.CustomerID,CompanyName  from Orders , [Order Details], Customers
+where Orders.OrderID=[Order Details].OrderID and Customers.CustomerID=Orders.CustomerID
+
+
+
+---display  the orderid, orderdate and all the products in the order and also find the customer details and also show the employee details for each order
+
+select Orders.orderid,OrderDate,productid,unitprice,quantity,discount,Orders.CustomerID,CompanyName,
+emp.EmployeeID,concat(firstname,lastname) EmpName  from Orders  
+inner join [Order Details] 
+on Orders.OrderID=[Order Details].OrderID 
+inner Join Customers
+on Customers.CustomerID=Orders.CustomerID 
+inner Join emp
+on emp.EmployeeID=orders.EmployeeID 
+order by emp.EmployeeID
+
+
+
+---display  the orderid, orderdate and all the products in the order and also find the customer details and also show the employee details for each order in the year 1996
+
+select Orders.orderid,OrderDate,productid,unitprice,quantity,discount,Orders.CustomerID,CompanyName,
+emp.EmployeeID,concat(firstname,lastname) EmpName  from Orders  
+inner join [Order Details] 
+on Orders.OrderID=[Order Details].OrderID  and datepart(year,orderdate)=1996
+inner Join Customers
+on Customers.CustomerID=Orders.CustomerID 
+inner Join emp
+on emp.EmployeeID=orders.EmployeeID 
+order by emp.EmployeeID
+
+
+---display  the orderid, orderdate and all the products in the order and also find the customer details and also show the employee details for each order in the year 1996 for employeeid=1
+--or
+---display all the orders bagged by employeeid 1 in 1996
+select Orders.orderid,OrderDate,productid,unitprice,quantity,discount,Orders.CustomerID,CompanyName,
+emp.EmployeeID,concat(firstname,lastname) EmpName  from Orders  
+inner join [Order Details] 
+on Orders.OrderID=[Order Details].OrderID  and datepart(year,orderdate)=1996
+inner Join Customers
+on Customers.CustomerID=Orders.CustomerID  
+inner Join emp
+on emp.EmployeeID=orders.EmployeeID  and orders.EmployeeID=1
+order by emp.EmployeeID
+
+---dispaly particular orders data for employee id 1 in 1996
+
+select Orders.orderid,OrderDate,productid,unitprice,quantity,discount,Orders.CustomerID,Customers.CompanyName,
+emp.EmployeeID,concat(firstname,lastname) EmpName,Shippers.CompanyName as ShippingCompanyName  from Orders  
+inner join [Order Details] 
+on Orders.OrderID=[Order Details].OrderID  and datepart(year,orderdate)=1996 and orders.orderid=10258
+inner Join Customers
+on Customers.CustomerID=Orders.CustomerID  
+inner Join emp
+on emp.EmployeeID=orders.EmployeeID  or orders.EmployeeID=2
+inner Join Shippers
+on Shippers.ShipperID=Orders.ShipVia
+
+--b) Outer Joins:
+	1) Left 
+	2) Right 
+	3)Full
+--c) Self Joins
+--is a join which is a join performed on a single table itself by creating alias copies of the table.
+sp_help emp
+select e.employeeid,concat(e.firstname,e.lastname) empname,
+m.employeeid,
+concat(m.FirstName,
+m.LastName) mgrsName from  emp e 
+join emp m
+on e.reportsto=m.employeeid
+
+select EmployeeID,firstname,lastname,ReportsTo from emp
+
+create table Jobs
+(JobType varchar(10),
+ JobLoc varchar(10),
+ JobBand varchar(10))
+
+ select * from Jobs
+
+
+
+ insert into Jobs values 
+ ('Blue','Chennai','Red'),
+						('White','Bangalore','Blue'),
+						('Red','Mumbai','White')
+
+ select concat(t1.Jobloc,' will be playing with ' , t2.JobLoc) 
+ from jobs t1 join jobs  t2
+on t1.JobBand=t2.JobType
+
+						---Matches to be played
+--Chennai will be playing with Mumbai
+--Bangalore will be playing with  Chennai
+--Mumbai will be playing with Banglore
+
+
+create table AllEmp
+(Empid int primary key identity(1,1),
+EmpName varchar(20),
+Salary decimal(18,2))
+
+insert into AllEmp values
+('Ramesh',2000.00),
+('Khilan',1500.00),
+('Kaushik',2000.00),
+('Chaitanya',6500.00),
+('Heena',8500.00),
+('Jack',4500.00),
+('Harsh',10000.00)
+
+select * from AllEmp
+1	Ramesh	2000.00
+2	Khilan	1500.00
+3	Kaushik	2000.00
+4	Chaitanya	6500.00
+5	Heena	8500.00
+6	Jack	4500.00
+7	Harsh	10000.00
+
+select a.Empid,a.EmpName as "Earns Less",b.EmpName "Earns Higher" ,  a.Salary as "Lower Salary",b.Salary "Higher Salary", b.Salary-a.Salary "Difference In Salary" 
+from AllEmp as a join AllEmp as b
+on a.Salary<b.Salary
+order by a.Empid
+
+
+
+--d) Cross Joins
