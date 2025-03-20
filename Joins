@@ -104,19 +104,101 @@ inner Join emp
 on emp.EmployeeID=orders.EmployeeID  or orders.EmployeeID=2
 inner Join Shippers
 on Shippers.ShipperID=Orders.ShipVia
+------------------------------------------------------------------
+--b) Outer Joins: these joins are used when forceful selection of the data is required
+	--1) Left join/ Left outer join:
+	--Left outer join returns all rows from the left table and the matching records from the right table.
+	select * from Customers   
+	--91 customers
+	select * from Orders
+	--830
+	
+	--Case 2: out of 91 customers there may be customers who have not placed order even once (in orders table customer id not found)
+	
+	if 2 customers
+	101    10248
+	101    10249
+	102      null
+	null
+	LHS					RHS
+	select c.customerid,o.orderid,o.OrderDate 
+	from  
+	orders o left outer join Customers c
+	on c.CustomerID=o.CustomerID
+	order by o.CustomerID
 
---b) Outer Joins:
-	1) Left 
-	2) Right 
-	3)Full
+	--2) Right join/Right outer join
+	--Case 1: All 91 customers would have placed the order atleast once
+	---(customer id will be found in orders table)
+	--Right outer join returns all rows from the right table and the matching records from the left table.
+	--All customers who have placed atleast once
+	select c.customerid,o.orderid,o.OrderDate 
+	from  
+	Customers c right outer join orders o
+	on c.CustomerID=o.CustomerID
+	order by o.CustomerID
+
+
+	--3) Full join/Full outer join:
+	--All the data from both the tables will be taken
+	--Case 3: out of 91 customers there may be customers who have placed repeated orders
+	---(customer id would be found multiple times)
+	select c.customerid,o.orderid,o.OrderDate 
+	from  
+	Customers c full outer join orders o
+	on c.CustomerID=o.CustomerID
+	order by o.CustomerID
+
+
+	select * from emp
+	PK           FK
+	Empno Ename  Deptno Sal
+	1	Jay		 100		10000.00
+	2	Ajay	 100		10000.00
+	3	Vijay	 102		10000.00
+	4	Ajay	 101		5000.00
+	5	Tina	 101		5000.00
+	6	Parikshit NULL	    10000.00
+	select * from dept
+	FK
+	Deptno Dname		Loc
+	100	Accounts Team	Kochi
+	101	Sales	        Bangalore
+	102	Learning	    Bhopal
+	103	Development	    Mumbai
+
+---find out all the employees whether they have deptno assigned to them or not.
+select empno,ename,e.deptno,sal 
+from emp e left outer join dept d
+on e.Deptno=d.Deptno
+
+----find out only the employees  who have a deptno assgined to them
+select empno,ename,d.deptno,sal 
+from dept d left outer join emp e
+on e.Deptno=d.Deptno
+order by Empno
+
+select empno,ename,d.deptno,sal 
+from emp e right outer join dept d
+on e.Deptno=d.Deptno
+order by Empno
+
+select empno,ename,d.deptno,sal 
+from emp e full outer join dept d
+on e.Deptno=d.Deptno
+order by Empno
+
+
+
+---------------------------------------------
 --c) Self Joins
 --is a join which is a join performed on a single table itself by creating alias copies of the table.
 sp_help emp
 select e.employeeid,concat(e.firstname,e.lastname) empname,
 m.employeeid,
 concat(m.FirstName,
-m.LastName) mgrsName from  emp e 
-join emp m
+m.LastName) mgrsName 
+from  emp e join emp m
 on e.reportsto=m.employeeid
 
 select EmployeeID,firstname,lastname,ReportsTo from emp
@@ -173,6 +255,29 @@ from AllEmp as a join AllEmp as b
 on a.Salary<b.Salary
 order by a.Empid
 
+--d) Cross Joins:rows of one table x rows of another table(Multiplication)
+--Permutations and combinations which can be possible for a given set of rows.
+select * from Customers (91)
+
+select * from Products (77)
+ALFKI ---> 1*77 =77
+ANATR----> 1*77=77
+---------------------------
+				154
+
+				select 91*77
+select customerid,productid from customers cross join Products
+
+Probability
+Northwind company---- sale of all 77 products----> 1
+91 * 77= 
 
 
---d) Cross Joins
+
+
+select * from ShirtColors (Red,Green and Blue)
+select * from ShirtSizes  (Small,Large and Medium)
+
+select * from ShirtColors cross join ShirtSize
+
+
