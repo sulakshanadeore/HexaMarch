@@ -1,0 +1,60 @@
+--Sub Queries
+Query
+---- single(single value/row)
+----multiple outputs(multiple values in multiple rows)
+
+
+Empid Ename Sal (Multiple values in a single row)
+   1    Jim	10000
+
+Empid(Single value)
+1
+
+Empid Ename Sal (Multiple values in multiple rows)
+  1    Jim	10000
+  2    Jack 20000
+
+  Empid
+  1
+  2
+  3
+
+
+  Single Value-----> =/>/</>=/<=/!=
+  Multiple Values ------- in
+  Exists
+
+
+  Query operator(Inner Query)
+  Execution:
+  1) Outer query output is passed to the inner query:
+  When outer query is executed first and the output of it is passed to the inner  query, this is  called 'Co-related Sub Query'
+
+  2) Inner query output is passed to the outer query: When inner query is executed first and the output of it is passed to the outer query, this is  called 'Nested Sub Query'
+
+  Outer query can contain:
+  Select,Insert,Update,Delete with operators =/>/</>=/<=/!=/in/between,ANY,All, etc
+  Rules for writing queries:
+  a) SubQuery/InnerQuery/Nested Query is to be written in parenthesis
+  b) Subqueriescan be nested within another subquery. SubQuery can go to any level, but we never go beyond 32 levels of subquery becos it becomes too much complex.
+  c) A subquery must consist of Select and from clause always
+  d) A subquery can consists of all the clauses like where,group, orderby,having,top etc. But to specify the top we must have order by.
+  e)A subquery can return a single value, a single row, a single column or a whole table. 
+
+  When to use SubQueries:
+  1)Breakdown the logic of complex problems into smaller, more manageable and simple queries we use subqueries. Sub Queries are used when the join condition is difficult to imagine logically enough then we use subqueries.
+  2) Retrieval of the data is based on some another query output which serves  as the filter criteria for another query.
+  3) Perform aggregate functions in a query.
+  4) Make comparisions between data
+
+
+
+  Whether subqueries are faster than joins or Joins are faster than subqueries?
+  Joins are faster than subqueries:
+  --------------------------------
+  becoz the join is a single query,as we can have multple subqueries which are nested within each other and moreover they are written over different table it makes subqueries slower.
+
+
+
+
+
