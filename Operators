@@ -1,0 +1,52 @@
+--Operators: Union, Union all , Intersect and Except(Minus)
+
+--The number of columns in the select query/statement must be equal in both the queries.
+
+select column/s from tablename
+[where
+group by
+having
+order by]
+		Operator
+select column/s from tablename
+[where
+group by
+having
+order by]
+
+--the number of columns, sequence of the column datatypes must match with the first query
+select ename,deptno from emp
+operator
+select dname,deptno from dept
+
+
+Union-----it unites the data of two tables but ignores/ie doesn't show  the duplicate data
+Union All--- it unites the of two table but keeps the duplicate data
+Intersect----Keeps only the common data between 2 tables
+Except---- keeps the data present in the first table but not present in the second table
+
+
+--Find the customers and suppliers who are in the same city
+
+select city from customers
+union
+select city from suppliers
+
+
+select city from customers
+union all
+select city from suppliers
+
+select city from customers
+intersect
+select city from suppliers
+
+
+select city from customers
+except
+select city from suppliers
+
+
+select city from suppliers
+except
+select city from customers
