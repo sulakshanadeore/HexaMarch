@@ -1,0 +1,245 @@
+use NorthwindOriginal
+go
+select * from Customers
+
+-------Queries returning single value---Scalar Sub Queries
+---Find the customers who stay in the same city as customerid 'ANATR' is located.
+2) Find the customer
+1) who are in the same city as 'ALFKI'
+
+select city from Customers
+where CustomerID='ANATR'
+
+
+select * from customers 
+where city= (select city from Customers
+where CustomerID='ANATR')
+
+----Find the products who are in the same category as productid 1
+1) Find the category of product id
+2) Find all the products which match the above output
+
+select categoryid from Products
+where ProductID=1
+
+select * from products
+where CategoryID=(select categoryid from Products
+where ProductID=1)
+
+--create a table called "CustomersInMexicoDF" by taking the structure of the customers table but not taking any data as the where is condition is false.
+select * into customersInMexicoDF from Customers
+where 1=2
+
+--Oracle
+--create table custData
+--as 
+--select * from customers
+--where 1=2
+
+sp_help customers
+
+sp_help customersInMexicoDF
+--Now insert the data
+insert into customersInMexicoDF   select * from Customers
+where city='México D.F.'
+
+select * from customersInMexicoDF
+
+select * into AllCustData from Customers
+select * from AllCustData
+where CustomerID='ALFKI'
+
+sp_help AllCustData
+
+delete from AllCustData
+where CompanyName =(select CompanyName from Customers
+where CustomerID='ALFKI')
+-----------------------------------------------------------
+select * from Customers
+---Find out the cities where are esteemed customers are located to have a meeting with either their owners or order administrator(contact title)
+select city,companyname from Customers
+where CompanyName in (select CompanyName from Customers
+where ContactTitle='Owner' or ContactTitle='OrderAdministrator')
+
+--Find out companies with whom we are directly connected to the owners or order administrator(contact title)
+select CompanyName from Customers
+where ContactTitle='Owner' or ContactTitle='OrderAdministrator'
+
+select * from emp
+---find out all the employees where  Nancy and Robert(are firstnames) stay.
+
+select city from emp
+where FirstName in ('Nancy','Robert')
+
+select * from emp
+where city in (select city from emp
+where FirstName in ('Nancy','Robert'))
+
+
+select * from emp
+where city in (select city from emp
+where FirstName like 'Nancy' or FirstName like 'Robert')
+
+----find all the products whose unitprice is greater than the average price of the 
+--products in categoryid=1
+1) find avg(price) of categoryid =1
+2) compare the unitprice of all product with the avg(price)
+
+
+select avg(unitprice) from products
+where categoryid=1
+
+
+select * from Products
+where UnitPrice>(select avg(unitprice) from products
+where categoryid=1)
+order by UnitPrice
+
+
+----find all the products whose unitprice is greater than the average price of the 
+--products in all categories (MAX)
+
+
+---This will bring avg for all catgroies
+select avg(unitprice) from products
+group by categoryid
+--54.0066<----- MAX in all categories
+
+select * from Products
+
+select * from Products
+where UnitPrice > all (select avg(unitprice) from products
+group by categoryid)
+
+----find all the products whose unitprice is greater than any of average price of the 
+--products in all categories
+
+
+select avg(unitprice) from products
+group by categoryid
+--20.25<---- min in all categories
+--all products whose unitprice > 20.25
+select * from Products
+where UnitPrice > any (select avg(unitprice) from products
+group by categoryid)
+order by UnitPrice
+
+----------------------------------
+--Display the list of all products if and only if the number of products in categoryid=1 is >12
+----Exists is a operator which executes the outer query if inner query returns true
+select count(productid) from products
+where CategoryID=1
+
+select * from products
+where exists(select count(productid) from products
+where CategoryID=1
+having count(productid)>12)
+
+
+select * from products
+where exists(select count(productid) from products
+where CategoryID=1
+having count(productid)>11)
+
+---display all the order details if the orderprice(total price) is >1000
+select orderid,productid,unitprice,quantity,(unitprice*quantity) calculatedPrice from [Order Details]
+
+select 168+98+174
+
+select orderid,sum(unitprice*quantity) calculatedPrice from [Order Details]
+group by orderid
+
+select orderid ,sum(unitprice*quantity) from [Order Details]
+group by orderid
+having sum(unitprice*quantity) in (select sum(unitprice*quantity) calculatedPrice from [Order Details]
+group by orderid
+having sum(unitprice*quantity)>1000)
+order by sum(unitprice*quantity)
+
+select orderid 
+from [Order Details]
+group by orderid
+having sum(unitprice*quantity) in
+							      (select sum(unitprice*quantity) calculatedPrice 
+									from [Order Details]
+									group by orderid
+									having sum(unitprice*quantity)>1000)
+order by sum(unitprice*quantity)
+
+
+Co-related--Synchronized sub queries , that reference columns from the outer query .
+They are used to get value from  a subquery that is co-related with the outer query.
+
+Working:
+1) The subquery is executed once for each row in the outer query.
+2) the subquery references columns from the outer query
+3) The subquery returns a single value 
+
+---Find the products whose unitprice is greater than the average price in their own category.
+select categoryid,avg(unitprice) from Products
+group by categoryid
+1	37.9791
+2	23.0625
+3	25.16
+4	28.73
+5	20.25
+6	54.0066
+7	32.37
+8	20.6825
+select * from Products as outerquery
+where outerquery.unitprice > (select avg(innerquery.unitprice) from Products as innerquery
+									where outerquery.CategoryID=innerquery.CategoryID
+										group by CategoryID)
+order by outerquery.ProductID
+
+
+---find the orders who have orderprice > avg(orderprice) in particular year
+1) Find avg(orderprice) yearly basis
+2) find orders whose value is .001% of avg(orderprice) yearly basis
+
+select distinct(datepart(year,orderdate)) from Orders
+
+
+select sum(d.yearlyorders)/3 as averagesales,(sum(d.yearlyorders)/3) *0.001  as smallAmtofAverage from
+(select datepart(year,orderdate) as datedata,sum(unitprice*quantity) yearlyorders from Orders inner join [Order Details]
+on [Order Details].OrderID=Orders.OrderID
+group by datepart(year,orderdate)) as d
+
+
+select orderid,sum(unitprice*quantity) as total from [order details]
+group by orderid
+having sum(unitprice*quantity) >(select (sum(d.yearlyorders)/3) *0.001  as smallAmtofAverage from
+(select datepart(year,orderdate) as datedata,sum(unitprice*quantity) yearlyorders from Orders inner join [Order Details]
+on [Order Details].OrderID=Orders.OrderID
+group by datepart(year,orderdate)) as d)
+order by total
+
+
+
+
+select sum(d.yearlyorders)/3,(sum(d.yearlyorders)/3) *0.001  as averagesales from
+(select datepart(year,orderdate) as datedata,sum(unitprice*quantity) yearlyorders from Orders inner join [Order Details]
+on [Order Details].OrderID=Orders.OrderID
+group by datepart(year,orderdate)) as d
+
+select  (469771.34+226298.50+658388.75)/3
+sum -- 1354458.59
+Average- 451486.196666
+
+---Yearly sales
+select datepart(year,orderdate) as datedata,sum(unitprice*quantity) yearlyorders from Orders inner join [Order Details]
+on [Order Details].OrderID=Orders.OrderID
+group by datepart(year,orderdate)
+
+
+
+1998	469771.34
+1996	226298.50
+1997	658388.75
+
+
+
+
+
+
+
